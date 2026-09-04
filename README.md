@@ -312,38 +312,3 @@ flowchart TD
     Historico --> Grafico
     Novo -->|PR detectado| Dashboard
 ```
-
----
-
-## 10. Etapas de Desenvolvimento
-
-### Etapa 1 — MVP
-- Modelagem de entidades JPA (`Exercise`, `Record`)
-- Endpoints REST: CRUD de exercícios e registros
-- Lógica de cálculo de 1RM e detecção de PR (`PRCalculatorService`)
-- Autenticação simples da API (RNF04)
-- Frontend com 3 telas: Registro rápido, Lista de exercícios, Histórico
-- Deploy no Render + banco Postgres gerenciado
-
-### Etapa 2 — Melhorias
-- Dashboard com resumo de PRs
-- Gráfico de evolução de 1RM (ex: Chart.js)
-- Exportar/Importar JSON
-- Configuração de unidade kg/lb, dark mode
-- Transformar em PWA instalável
-
-### Etapa 3 — Futuro (fora do escopo acadêmico inicial)
-- Exercícios unilaterais (registro por lado)
-- Sessões de treino (agrupar múltiplos registros por dia)
-- Metas de carga, peso corporal ao longo do tempo, RPE por série
-
----
-
-## 11. Próximos Passos Sugeridos
-1. Validar este documento com o orientador/critérios da disciplina (se aplicável)
-2. Criar o repositório do projeto (estrutura de pastas backend/frontend)
-3. Modelar as entidades JPA a partir do DER (seção 6)
-4. Implementar `PRCalculatorService` com testes unitários (bom ponto para nota acadêmica: TDD)
-5. Subir endpoints REST básicos e validar com Postman/Insomnia
-6. Construir o frontend consumindo a API
-7. Configurar deploy no Render + banco gerenciado
