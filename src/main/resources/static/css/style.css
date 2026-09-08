@@ -1,0 +1,215 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    background-color: #121212;
+    color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+label {
+    font-size: 0.85rem;
+    margin-top: 12px;
+    color: #aaa;
+}
+
+select, input, button {
+    font-size: 1.1rem;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+}
+
+button {
+    margin-top: 20px;
+    background-color: #4caf50;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:active {
+    background-color: #3d8b40;
+}
+
+#feedback {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.1rem;
+    display: none;
+}
+
+#feedback.ok {
+    display: block;
+    background-color: #1e3a1e;
+}
+
+#feedback.pr {
+    display: block;
+    background-color: #4a3b00;
+    font-weight: bold;
+}
+
+#feedback.erro {
+    display: block;
+    background-color: #4a1e1e;
+}
+
+.tabs {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.tabs a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding-bottom: 4px;
+}
+
+.tabs a.active {
+    color: #4caf50;
+    border-bottom: 2px solid #4caf50;
+}
+
+#exercise-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+#exercise-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+#exercise-list button.delete-btn {
+    background-color: #4a1e1e;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+#record-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 16px;
+}
+
+#record-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+#record-list li.empty {
+    display: block;
+    text-align: center;
+    color: #777;
+}
+
+.badge {
+    background-color: #4a3b00;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.actions button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.actions .delete-btn {
+    background-color: #4a1e1e;
+}
+
+.actions .edit-btn {
+    background-color: #2a2a4a;
+}
+
+#edit-form {
+    margin-top: 24px;
+    padding: 16px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+}
+
+#edit-form h2 {
+    font-size: 1.1rem;
+    margin-top: 0;
+}
+
+#cancel-edit {
+    background-color: #333;
+    margin-top: 8px;
+}
+
+
+#record-list li.pr-item {
+    border-left: 4px solid #ffd700;
+    background-color: #241f0d;
+}
+
+.badge {
+    background-color: #ffd700;
+    color: #1a1a1a;
+    font-weight: bold;
+}
+
+#sort-select {
+    margin-bottom: 16px;
+}
+
+#record-list li {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    transition: transform 0.1s;
+}
+
+#record-list li:hover {
+    transform: translateX(2px);
+}

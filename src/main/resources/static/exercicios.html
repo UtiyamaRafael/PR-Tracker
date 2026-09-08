@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR Gym - Exercícios</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <nav class="tabs">
+        <a href="index.html">Registro</a>
+        <a href="exercicios.html" class="active">Exercícios</a>
+        <a href="historico.html">Histórico</a>
+    </nav>
+
+    <h1>Exercícios</h1>
+
+    <form id="exercise-form">
+        <label for="name-input">Nome do exercício</label>
+        <input type="text" id="name-input" required placeholder="Ex: Supino Reto">
+
+        <label for="muscle-group-select">Grupo muscular</label>
+        <select id="muscle-group-select" required></select>
+
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <div id="feedback"></div>
+
+    <ul id="exercise-list"></ul>
+</div>
+
+<script src="js/exercicios.js"></script>
+</body>
+</html>

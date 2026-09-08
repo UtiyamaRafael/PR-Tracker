@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR Gym - Histórico</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <nav class="tabs">
+        <a href="index.html">Registro</a>
+        <a href="exercicios.html">Exercícios</a>
+        <a href="historico.html" class="active">Histórico</a>
+    </nav>
+
+    <h1>Histórico</h1>
+
+    <label for="exercise-select">Exercício</label>
+    <select id="exercise-select"></select>
+
+    <label for="exercise-select">Exercício</label>
+    <select id="exercise-select"></select>
+
+    <label for="sort-select">Ordenar por</label>
+    <select id="sort-select">
+        <option value="data-desc">Mais recente primeiro</option>
+        <option value="data-asc">Mais antigo primeiro</option>
+        <option value="carga-desc">Maior carga/1RM primeiro</option>
+        <option value="reps-desc">Mais repetições primeiro</option>
+    </select>
+
+    <ul id="record-list"></ul>
+
+    <form id="edit-form" class="hidden">
+        <h2>Editar registro</h2>
+        <label for="edit-weight">Peso (kg)</label>
+        <input type="number" id="edit-weight" step="0.5">
+
+        <label for="edit-reps">Repetições</label>
+        <input type="number" id="edit-reps" required>
+
+        <button type="submit">Salvar edição</button>
+        <button type="button" id="cancel-edit">Cancelar</button>
+    </form>
+
+    <div id="feedback"></div>
+</div>
+
+<script src="js/historico.js"></script>
+</body>
+</html>

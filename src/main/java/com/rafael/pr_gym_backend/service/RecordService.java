@@ -25,13 +25,16 @@ public class RecordService {
         this.prCalculatorService = prCalculatorService;
     }
 
-    // RF05, RF06, RF07, RF08 — registrar carga e detectar novo PR
     public Record registrar(Long exerciseId, Double weight, Integer reps, LocalDate date) {
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Exercício não encontrado."));
 
         Double estimated1RM = prCalculatorService.calcularEstimated1RM(weight, reps);
         boolean isPr = prCalculatorService.verificarNovoPR(exercise, weight, reps, estimated1RM);
+
+        if (isPr) {
+            removerPRAnterior(exercise, weight == null);
+        }
 
         Record record = new Record();
         record.setExercise(exercise);
@@ -44,6 +47,18 @@ public class RecordService {
         }
 
         return recordRepository.save(record);
+    }
+
+    // Tira a flag de PR do registro que era recorde antes deste novo
+    private void removerPRAnterior(Exercise exercise, boolean pesoCorporal) {
+        var anterior = pesoCorporal
+                ? recordRepository.findTopByExerciseAndWeightIsNullOrderByRepsDesc(exercise)
+                : recordRepository.findTopByExerciseAndWeightIsNotNullOrderByEstimated1RMDesc(exercise);
+
+        anterior.ifPresent(r -> {
+            r.setIsPr(false);
+            recordRepository.save(r);
+        });
     }
 
     // RF10 — histórico por exercício
