@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR Gym - Gráfico</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+<div class="container">
+    <nav class="tabs">
+        <a href="index.html">Dashboard</a>
+        <a href="registro.html">Registro</a>
+        <a href="exercicios.html">Exercícios</a>
+        <a href="historico.html">Histórico</a>
+        <a href="grafico.html" class="active">Gráfico</a>
+    </nav>
+
+    <h1>Evolução</h1>
+
+    <label for="exercise-select">Exercício</label>
+    <select id="exercise-select"></select>
+
+    <div id="chart-wrapper">
+        <canvas id="evolution-chart"></canvas>
+    </div>
+    <p id="empty-message" class="empty hidden">Sem dados de 1RM para este exercício ainda (ou é um exercício de peso corporal, que não gera 1RM).</p>
+</div>
+
+<a href="registro.html" class="fab">+</a>
+
+<script src="js/grafico.js"></script>
+</body>
+</html>

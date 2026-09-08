@@ -20,4 +20,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 
     // Usado ao excluir um exercício (RF04 — bloqueia exclusão se houver histórico)
     boolean existsByExercise(Exercise exercise);
+
+    Optional<Record> findByExerciseAndIsPrTrue(Exercise exercise);
 }
