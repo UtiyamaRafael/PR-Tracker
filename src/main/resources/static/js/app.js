@@ -1,7 +1,7 @@
-const API_BASE = '/api';
+exigirAutenticacao();
 
 async function carregarExercicios() {
-    const response = await fetch(`${API_BASE}/exercises`);
+    const response = await authFetch(`${API_BASE}/exercises`);
     const exercicios = await response.json();
 
     const select = document.getElementById('exercise-select');
@@ -28,7 +28,7 @@ document.getElementById('record-form').addEventListener('submit', async (e) => {
         reps: Number(reps)
     };
 
-    const response = await fetch(`${API_BASE}/records`, {
+    const response = await authFetch(`${API_BASE}/records`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)

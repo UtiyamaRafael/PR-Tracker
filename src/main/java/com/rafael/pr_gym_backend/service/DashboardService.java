@@ -2,6 +2,7 @@ package com.rafael.pr_gym_backend.service;
 
 import com.rafael.pr_gym_backend.dto.PrSummaryResponse;
 import com.rafael.pr_gym_backend.model.Exercise;
+import com.rafael.pr_gym_backend.model.User;
 import com.rafael.pr_gym_backend.repository.ExerciseRepository;
 import com.rafael.pr_gym_backend.repository.RecordRepository;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,11 @@ public class DashboardService {
     }
 
     // RF11 — um card por exercício, com o PR vigente (ou vazio, se ainda não tem registro)
-    public List<PrSummaryResponse> listarResumoPRs() {
+    public List<PrSummaryResponse> listarResumoPRs(User user) {
         List<Exercise> exercicios = exerciseRepository.findAll();
 
         return exercicios.stream()
-                .map(exercise -> recordRepository.findByExerciseAndIsPrTrue(exercise)
+                .map(exercise -> recordRepository.findByUserAndExerciseAndIsPrTrue(user, exercise)
                         .map(record -> new PrSummaryResponse(
                                 exercise.getId(), exercise.getName(), exercise.getMuscleGroup().getName(),
                                 record.getWeight(), record.getReps(), record.getEstimated1RM(), record.getDate()

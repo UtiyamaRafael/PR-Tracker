@@ -10,17 +10,17 @@ import java.util.Optional;
 
 public interface RecordRepository extends JpaRepository<Record, Long> {
 
-    // Histórico de um exercício, mais recente primeiro (RF10)
-    List<Record> findByExerciseOrderByDateDesc(Exercise exercise);
+    List<Record> findByUserAndExerciseOrderByDateDesc(User user, Exercise exercise);
 
-    // Usado pelo PRCalculatorService pra achar o recorde atual (RF07)
-    Optional<Record> findTopByExerciseAndWeightIsNotNullOrderByEstimated1RMDesc(Exercise exercise);
+    Optional<Record> findTopByUserAndExerciseAndWeightIsNotNullOrderByEstimated1RMDesc(User user, Exercise exercise);
 
-    // PR de exercícios com peso corporal (weight nulo) — recorde por repetições (RF07)
-    Optional<Record> findTopByExerciseAndWeightIsNullOrderByRepsDesc(Exercise exercise);
+    Optional<Record> findTopByUserAndExerciseAndWeightIsNullOrderByRepsDesc(User user, Exercise exercise);
 
-    // Usado ao excluir um exercício (RF04 — bloqueia exclusão se houver histórico)
-    boolean existsByExercise(Exercise exercise);
+    Optional<Record> findByUserAndExerciseAndIsPrTrue(User user, Exercise exercise);
 
     List<Record> findByUserAndExerciseId(User user, Long exerciseId);
+
+    // Sem filtro de usuário de propósito: Exercise é compartilhado entre todos,
+    // então bloqueia exclusão se QUALQUER usuário tiver histórico nele (RF04)
+    boolean existsByExercise(Exercise exercise);
 }

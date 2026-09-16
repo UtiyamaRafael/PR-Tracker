@@ -2,7 +2,9 @@ package com.rafael.pr_gym_backend.controller;
 
 import com.rafael.pr_gym_backend.dto.RecordRequest;
 import com.rafael.pr_gym_backend.model.Record;
+import com.rafael.pr_gym_backend.model.User;
 import com.rafael.pr_gym_backend.service.RecordService;
+import com.rafael.pr_gym_backend.util.AuthUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +16,18 @@ import java.util.List;
 public class RecordController {
 
     private final RecordService recordService;
+    private final AuthUtil authUtil;
 
-    public RecordController(RecordService recordService) {
+    public RecordController(RecordService recordService, AuthUtil authUtil) {
         this.recordService = recordService;
+        this.authUtil = authUtil;
     }
 
     @PostMapping
     public ResponseEntity<Record> registrar(@RequestBody RecordRequest request) {
+        User user = authUtil.getCurrentUser();
         Record criado = recordService.registrar(
+                user,
                 request.getExerciseId(),
                 request.getWeight(),
                 request.getReps(),
@@ -32,17 +38,20 @@ public class RecordController {
 
     @GetMapping("/exercise/{exerciseId}")
     public List<Record> historico(@PathVariable Long exerciseId) {
-        return recordService.listarHistorico(exerciseId);
+        User user = authUtil.getCurrentUser();
+        return recordService.listarHistorico(user, exerciseId);
     }
 
     @PutMapping("/{id}")
     public Record editar(@PathVariable Long id, @RequestBody RecordRequest request) {
-        return recordService.editar(id, request.getWeight(), request.getReps(), request.getDate());
+        User user = authUtil.getCurrentUser();
+        return recordService.editar(user, id, request.getWeight(), request.getReps(), request.getDate());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
-        recordService.excluir(id);
+        User user = authUtil.getCurrentUser();
+        recordService.excluir(user, id);
         return ResponseEntity.noContent().build();
     }
 }

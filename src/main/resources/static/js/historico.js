@@ -1,8 +1,9 @@
-const API_BASE = '/api';
+exigirAutenticacao();
+
 let editandoId = null;
 
 async function carregarExercicios() {
-    const response = await fetch(`${API_BASE}/exercises`);
+    const response = await authFetch(`${API_BASE}/exercises`);
     const exercicios = await response.json();
 
     const select = document.getElementById('exercise-select');
@@ -23,7 +24,7 @@ async function carregarExercicios() {
 let registrosAtuais = [];
 
 async function carregarHistorico(exerciseId) {
-    const response = await fetch(`${API_BASE}/records/exercise/${exerciseId}`);
+    const response = await authFetch(`${API_BASE}/records/exercise/${exerciseId}`);
     registrosAtuais = await response.json();
     renderizarHistorico();
 }
@@ -92,7 +93,7 @@ document.getElementById('edit-form').addEventListener('submit', async (e) => {
     const weightValue = document.getElementById('edit-weight').value;
     const reps = document.getElementById('edit-reps').value;
 
-    const response = await fetch(`${API_BASE}/records/${editandoId}`, {
+    const response = await authFetch(`${API_BASE}/records/${editandoId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -116,7 +117,7 @@ document.getElementById('edit-form').addEventListener('submit', async (e) => {
 
 async function excluirRegistro(e) {
     const id = e.target.dataset.id;
-    const response = await fetch(`${API_BASE}/records/${id}`, { method: 'DELETE' });
+    const response = await authFetch(`${API_BASE}/records/${id}`, { method: 'DELETE' });
     const feedback = document.getElementById('feedback');
 
     if (response.ok) {

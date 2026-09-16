@@ -1,7 +1,7 @@
-const API_BASE = '/api';
+exigirAutenticacao();
 
 async function carregarGruposMusculares() {
-    const response = await fetch(`${API_BASE}/muscle-groups`);
+    const response = await authFetch(`${API_BASE}/muscle-groups`);
     const grupos = await response.json();
 
     const select = document.getElementById('muscle-group-select');
@@ -19,7 +19,7 @@ async function carregarGruposMusculares() {
 let editandoExercicioId = null;
 
 async function carregarExercicios() {
-    const response = await fetch(`${API_BASE}/exercises`);
+    const response = await authFetch(`${API_BASE}/exercises`);
     const exercicios = await response.json();
 
     const list = document.getElementById('exercise-list');
@@ -53,7 +53,7 @@ async function excluirExercicio(e) {
     const id = e.target.dataset.id;
     const feedback = document.getElementById('feedback');
 
-    const response = await fetch(`${API_BASE}/exercises/${id}`, { method: 'DELETE' });
+    const response = await authFetch(`${API_BASE}/exercises/${id}`, { method: 'DELETE' });
 
     if (response.ok) {
         feedback.textContent = 'Exercício excluído.';
@@ -79,7 +79,7 @@ document.getElementById('exercise-form').addEventListener('submit', async (e) =>
         : `${API_BASE}/exercises`;
     const method = editandoExercicioId ? 'PUT' : 'POST';
 
-    const response = await fetch(url, {
+    const response = await authFetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, muscleGroupId })

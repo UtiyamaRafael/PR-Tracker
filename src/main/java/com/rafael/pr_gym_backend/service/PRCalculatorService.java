@@ -2,6 +2,7 @@ package com.rafael.pr_gym_backend.service;
 
 import com.rafael.pr_gym_backend.model.Exercise;
 import com.rafael.pr_gym_backend.model.Record;
+import com.rafael.pr_gym_backend.model.User;
 import com.rafael.pr_gym_backend.repository.RecordRepository;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +33,14 @@ public class PRCalculatorService {
      * - Se weight for nulo: PR = maior número de repetições já registrado.
      * - Se weight for preenchido: PR = maior 1RM estimado já registrado.
      */
-    public boolean verificarNovoPR(Exercise exercise, Double weight, Integer reps, Double estimated1RM) {
+    public boolean verificarNovoPR(User user, Exercise exercise, Double weight, Integer reps, Double estimated1RM) {
         if (weight == null) {
             Optional<Record> recordeAtual = recordRepository
-                    .findTopByExerciseAndWeightIsNullOrderByRepsDesc(exercise);
+                    .findTopByUserAndExerciseAndWeightIsNullOrderByRepsDesc(user, exercise);
             return recordeAtual.isEmpty() || reps > recordeAtual.get().getReps();
         } else {
             Optional<Record> recordeAtual = recordRepository
-                    .findTopByExerciseAndWeightIsNotNullOrderByEstimated1RMDesc(exercise);
+                    .findTopByUserAndExerciseAndWeightIsNotNullOrderByEstimated1RMDesc(user, exercise);
             return recordeAtual.isEmpty() || estimated1RM > recordeAtual.get().getEstimated1RM();
         }
     }

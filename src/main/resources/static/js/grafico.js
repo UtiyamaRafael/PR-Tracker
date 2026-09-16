@@ -1,8 +1,9 @@
-const API_BASE = '/api';
+exigirAutenticacao();
+
 let chart = null;
 
 async function carregarExercicios() {
-    const response = await fetch(`${API_BASE}/exercises`);
+    const response = await authFetch(`${API_BASE}/exercises`);
     const exercicios = await response.json();
 
     const select = document.getElementById('exercise-select');
@@ -21,7 +22,7 @@ async function carregarExercicios() {
 }
 
 async function carregarGrafico(exerciseId) {
-    const response = await fetch(`${API_BASE}/records/exercise/${exerciseId}`);
+    const response = await authFetch(`${API_BASE}/records/exercise/${exerciseId}`);
     const registros = await response.json();
 
     // Só pontos com 1RM calculado, ordenados do mais antigo pro mais recente

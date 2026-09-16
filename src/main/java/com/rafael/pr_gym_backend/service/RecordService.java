@@ -2,6 +2,7 @@ package com.rafael.pr_gym_backend.service;
 
 import com.rafael.pr_gym_backend.model.Exercise;
 import com.rafael.pr_gym_backend.model.Record;
+import com.rafael.pr_gym_backend.model.User;
 import com.rafael.pr_gym_backend.repository.ExerciseRepository;
 import com.rafael.pr_gym_backend.repository.RecordRepository;
 import org.springframework.stereotype.Service;
@@ -25,18 +26,19 @@ public class RecordService {
         this.prCalculatorService = prCalculatorService;
     }
 
-    public Record registrar(Long exerciseId, Double weight, Integer reps, LocalDate date) {
+    public Record registrar(User user, Long exerciseId, Double weight, Integer reps, LocalDate date) {
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Exercício não encontrado."));
 
         Double estimated1RM = prCalculatorService.calcularEstimated1RM(weight, reps);
-        boolean isPr = prCalculatorService.verificarNovoPR(exercise, weight, reps, estimated1RM);
+        boolean isPr = prCalculatorService.verificarNovoPR(user, exercise, weight, reps, estimated1RM);
 
         if (isPr) {
-            removerPRAnterior(exercise, weight == null);
+            removerPRAnterior(user, exercise, weight == null);
         }
 
         Record record = new Record();
+        record.setUser(user);
         record.setExercise(exercise);
         record.setWeight(weight);
         record.setReps(reps);
@@ -50,10 +52,10 @@ public class RecordService {
     }
 
     // Tira a flag de PR do registro que era recorde antes deste novo
-    private void removerPRAnterior(Exercise exercise, boolean pesoCorporal) {
+    private void removerPRAnterior(User user, Exercise exercise, boolean pesoCorporal) {
         var anterior = pesoCorporal
-                ? recordRepository.findTopByExerciseAndWeightIsNullOrderByRepsDesc(exercise)
-                : recordRepository.findTopByExerciseAndWeightIsNotNullOrderByEstimated1RMDesc(exercise);
+                ? recordRepository.findTopByUserAndExerciseAndWeightIsNullOrderByRepsDesc(user, exercise)
+                : recordRepository.findTopByUserAndExerciseAndWeightIsNotNullOrderByEstimated1RMDesc(user, exercise);
 
         anterior.ifPresent(r -> {
             r.setIsPr(false);
@@ -62,17 +64,16 @@ public class RecordService {
     }
 
     // RF10 — histórico por exercício
-    public List<Record> listarHistorico(Long exerciseId) {
+    public List<Record> listarHistorico(User user, Long exerciseId) {
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Exercício não encontrado."));
 
-        return recordRepository.findByExerciseOrderByDateDesc(exercise);
+        return recordRepository.findByUserAndExerciseOrderByDateDesc(user, exercise);
     }
 
     // RF09 — editar registro, recalculando o PR do exercício
-    public Record editar(Long recordId, Double weight, Integer reps, LocalDate date) {
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new IllegalArgumentException("Registro não encontrado."));
+    public Record editar(User user, Long recordId, Double weight, Integer reps, LocalDate date) {
+        Record record = buscarRecordDoUsuario(user, recordId);
 
         record.setWeight(weight);
         record.setReps(reps);
@@ -82,23 +83,34 @@ public class RecordService {
         }
 
         Record salvo = recordRepository.save(record);
-        recalcularPR(record.getExercise());
+        recalcularPR(user, record.getExercise());
         return salvo;
     }
 
     // RF09 — excluir registro, recalculando o PR do exercício
-    public void excluir(Long recordId) {
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new IllegalArgumentException("Registro não encontrado."));
+    public void excluir(User user, Long recordId) {
+        Record record = buscarRecordDoUsuario(user, recordId);
 
         Exercise exercise = record.getExercise();
         recordRepository.delete(record);
-        recalcularPR(exercise);
+        recalcularPR(user, exercise);
+    }
+
+    // Busca o registro garantindo que pertence ao usuário logado (evita editar/excluir registro de outra pessoa)
+    private Record buscarRecordDoUsuario(User user, Long recordId) {
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new IllegalArgumentException("Registro não encontrado."));
+
+        if (!record.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("Registro não encontrado.");
+        }
+
+        return record;
     }
 
     // Reavalia qual registro é o PR vigente do exercício (usado após editar/excluir)
-    private void recalcularPR(Exercise exercise) {
-        List<Record> registros = recordRepository.findByExerciseOrderByDateDesc(exercise);
+    private void recalcularPR(User user, Exercise exercise) {
+        List<Record> registros = recordRepository.findByUserAndExerciseOrderByDateDesc(user, exercise);
 
         registros.forEach(r -> r.setIsPr(false));
 

@@ -1,7 +1,7 @@
-const API_BASE = '/api';
+exigirAutenticacao();
 
 async function carregarDashboard() {
-    const response = await fetch(`${API_BASE}/dashboard/prs`);
+    const response = await authFetch(`${API_BASE}/dashboard/prs`);
     const resumo = await response.json();
 
     const container = document.getElementById('pr-list');

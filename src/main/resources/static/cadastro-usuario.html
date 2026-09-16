@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>PR Gym — Criar conta</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>Criar conta</h1>
+
+    <form id="register-form">
+        <label for="username-input">Usuário</label>
+        <input type="text" id="username-input" required autocomplete="username">
+
+        <label for="password-input">Senha</label>
+        <input type="password" id="password-input" required autocomplete="new-password">
+
+        <button type="submit">Criar conta</button>
+    </form>
+
+    <p id="feedback"></p>
+
+    <p>Já tem conta? <a href="login.html">Entrar</a></p>
+
+    <script src="js/auth.js"></script>
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username-input').value;
+            const password = document.getElementById('password-input').value;
+            const feedback = document.getElementById('feedback');
+
+            const response = await fetch(`${API_BASE}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setToken(data.token);
+                window.location.href = '/index.html';
+            } else {
+                feedback.textContent = `Erro: ${await response.text()}`;
+                feedback.className = 'erro';
+            }
+        });
+
+        if (isAuthenticated()) {
+            window.location.href = '/index.html';
+        }
+    </script>
+</body>
+</html>
