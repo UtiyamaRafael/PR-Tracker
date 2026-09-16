@@ -2,6 +2,7 @@ package com.rafael.pr_gym_backend.repository;
 
 import com.rafael.pr_gym_backend.model.Exercise;
 import com.rafael.pr_gym_backend.model.Record;
+import com.rafael.pr_gym_backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     // Usado ao excluir um exercício (RF04 — bloqueia exclusão se houver histórico)
     boolean existsByExercise(Exercise exercise);
 
-    Optional<Record> findByExerciseAndIsPrTrue(Exercise exercise);
+    List<Record> findByUserAndExerciseId(User user, Long exerciseId);
 }

@@ -16,6 +16,10 @@ public class Record {
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     // Nulo para exercícios com peso corporal (ex: barra fixa sem anilha extra)
     private Double weight;
 
@@ -51,6 +55,9 @@ public class Record {
 
     public Exercise getExercise() { return exercise; }
     public void setExercise(Exercise exercise) { this.exercise = exercise; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
     public Double getWeight() { return weight; }
     public void setWeight(Double weight) { this.weight = weight; }
