@@ -1,6 +1,7 @@
 package com.rafael.pr_gym_backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class RegisterRequestDTO {
 
@@ -8,6 +9,7 @@ public class RegisterRequestDTO {
     private String username;
 
     @NotBlank
+    @Size(min = 6, message = "A senha deve ter pelo menos 6 caracteres")
     private String password;
 
     public String getUsername() { return username; }

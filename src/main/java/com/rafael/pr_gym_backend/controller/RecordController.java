@@ -5,6 +5,7 @@ import com.rafael.pr_gym_backend.model.Record;
 import com.rafael.pr_gym_backend.model.User;
 import com.rafael.pr_gym_backend.service.RecordService;
 import com.rafael.pr_gym_backend.util.AuthUtil;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class RecordController {
     }
 
     @PostMapping
-    public ResponseEntity<Record> registrar(@RequestBody RecordRequest request) {
+    public ResponseEntity<Record> registrar(@Valid @RequestBody RecordRequest request) {
         User user = authUtil.getCurrentUser();
         Record criado = recordService.registrar(
                 user,
@@ -43,7 +44,7 @@ public class RecordController {
     }
 
     @PutMapping("/{id}")
-    public Record editar(@PathVariable Long id, @RequestBody RecordRequest request) {
+    public Record editar(@PathVariable Long id, @Valid @RequestBody RecordRequest request) {
         User user = authUtil.getCurrentUser();
         return recordService.editar(user, id, request.getWeight(), request.getReps(), request.getDate());
     }

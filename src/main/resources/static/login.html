@@ -2,55 +2,29 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>PR Gym — Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR Gym - Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>PR Gym</h1>
+<div class="container">
+    <nav class="tabs">
+        <a href="index.html" class="active">Dashboard</a>
+        <a href="registro.html">Registro</a>
+        <a href="exercicios.html">Exercícios</a>
+        <a href="historico.html">Histórico</a>
+        <a href="grafico.html">Gráfico</a>
+        <button onclick="logout()">Sair</button>
+    </nav>
 
-    <form id="login-form">
-        <label for="username-input">Usuário</label>
-        <input type="text" id="username-input" required autocomplete="username">
+    <h1>Meus PRs</h1>
 
-        <label for="password-input">Senha</label>
-        <input type="password" id="password-input" required autocomplete="current-password">
+    <div id="pr-list"></div>
+</div>
 
-        <button type="submit">Entrar</button>
-    </form>
+<a href="registro.html" class="fab">+</a>
 
-    <p id="feedback"></p>
-
-    <p>Não tem conta? <a href="cadastro-usuario.html">Criar conta</a></p>
-
-    <script src="js/auth.js"></script>
-    <script>
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const username = document.getElementById('username-input').value;
-            const password = document.getElementById('password-input').value;
-            const feedback = document.getElementById('feedback');
-
-            const response = await fetch(`${API_BASE}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setToken(data.token);
-                window.location.href = '/index.html';
-            } else {
-                feedback.textContent = 'Usuário ou senha inválidos.';
-                feedback.className = 'erro';
-            }
-        });
-
-        // Se já estiver logado, não faz sentido ver a tela de login de novo
-        if (isAuthenticated()) {
-            window.location.href = '/index.html';
-        }
-    </script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
 </body>
 </html>

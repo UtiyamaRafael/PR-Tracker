@@ -1,12 +1,20 @@
 package com.rafael.pr_gym_backend.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 
 public class RecordRequest {
 
+    @NotNull(message = "O exercício é obrigatório")
     private Long exerciseId;
+
+    // Nulo é permitido (exercício de peso corporal)
     private Double weight;
+
+    @NotNull(message = "As repetições são obrigatórias")
     private Integer reps;
+
     private LocalDate date;
 
     public Long getExerciseId() { return exerciseId; }

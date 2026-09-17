@@ -3,6 +3,7 @@ package com.rafael.pr_gym_backend.controller;
 import com.rafael.pr_gym_backend.dto.ExerciseRequest;
 import com.rafael.pr_gym_backend.model.Exercise;
 import com.rafael.pr_gym_backend.service.ExerciseService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +26,13 @@ public class ExerciseController {
     }
 
     @PostMapping
-    public ResponseEntity<Exercise> cadastrar(@RequestBody ExerciseRequest request) {
+    public ResponseEntity<Exercise> cadastrar(@Valid @RequestBody ExerciseRequest request) {
         Exercise criado = exerciseService.cadastrar(request.getName(), request.getMuscleGroupId());
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
     @PutMapping("/{id}")
-    public Exercise editar(@PathVariable Long id, @RequestBody ExerciseRequest request) {
+    public Exercise editar(@PathVariable Long id, @Valid @RequestBody ExerciseRequest request) {
         return exerciseService.editar(id, request.getName(), request.getMuscleGroupId());
     }
 
