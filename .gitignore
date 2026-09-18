@@ -31,7 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-
-# application-prod.properties — adicionar esta linha
-jwt.secret=${JWT_SECRET}

@@ -15,11 +15,11 @@ public class AuthUtil {
     }
 
     public User getCurrentUser() {
-        String username = SecurityContextHolder.getContext()
+        String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
 
-        return userRepository.findByUsername(username)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário autenticado não encontrado no banco"));
     }
 }
