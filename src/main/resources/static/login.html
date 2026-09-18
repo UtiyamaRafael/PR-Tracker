@@ -9,8 +9,8 @@
     <h1>PR Gym</h1>
 
     <form id="login-form">
-        <label for="username-input">Usuário</label>
-        <input type="text" id="username-input" required autocomplete="username">
+        <label for="email-input">E-mail</label>
+        <input type="email" id="email-input" required autocomplete="email">
 
         <label for="password-input">Senha</label>
         <input type="password" id="password-input" required autocomplete="current-password">
@@ -20,6 +20,7 @@
 
     <p id="feedback"></p>
 
+    <p><a href="esqueci-senha.html">Esqueci minha senha</a></p>
     <p>Não tem conta? <a href="cadastro-usuario.html">Criar conta</a></p>
 
     <script src="js/auth.js"></script>
@@ -27,14 +28,14 @@
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const username = document.getElementById('username-input').value;
+            const email = document.getElementById('email-input').value;
             const password = document.getElementById('password-input').value;
             const feedback = document.getElementById('feedback');
 
             const response = await fetch(`${API_BASE}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ email, password })
             });
 
             if (response.ok) {
@@ -42,7 +43,7 @@
                 setToken(data.token);
                 window.location.href = '/index.html';
             } else {
-                feedback.textContent = 'Usuário ou senha inválidos.';
+                feedback.textContent = await response.text();
                 feedback.className = 'erro';
             }
         });

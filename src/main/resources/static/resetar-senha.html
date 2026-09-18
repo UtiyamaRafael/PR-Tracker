@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>PR Gym — Resetar senha</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>Criar nova senha</h1>
+
+    <form id="reset-form">
+        <label for="password-input">Nova senha</label>
+        <input type="password" id="password-input" required minlength="6" autocomplete="new-password">
+
+        <button type="submit">Salvar nova senha</button>
+    </form>
+
+    <p id="feedback"></p>
+
+    <p><a href="login.html">Voltar para o login</a></p>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        const feedback = document.getElementById('feedback');
+
+        if (!token) {
+            feedback.textContent = 'Link inválido — nenhum token encontrado na URL.';
+            feedback.className = 'erro';
+            document.getElementById('reset-form').style.display = 'none';
+        }
+
+        document.getElementById('reset-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newPassword = document.getElementById('password-input').value;
+
+            const response = await fetch(`${API_BASE}/auth/reset-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token, newPassword })
+            });
+
+            feedback.textContent = await response.text();
+            feedback.className = response.ok ? 'ok' : 'erro';
+
+            if (response.ok) {
+                document.getElementById('reset-form').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
