@@ -1,6 +1,6 @@
 # Documentação Técnica — App de Registro de PRs de Academia
 
-> Projeto acadêmico | Documento de especificação e arquitetura
+* Projeto acadêmico | Documento de especificação e arquitetura
 
 ---
 
