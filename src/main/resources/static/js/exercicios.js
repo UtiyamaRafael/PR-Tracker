@@ -1,104 +1,68 @@
-exigirAutenticacao();
+// exercicios.js — cadastro e listagem de exercícios (exercicios.html)
 
-async function carregarGruposMusculares() {
-    const response = await authFetch(`${API_BASE}/muscle-groups`);
-    const grupos = await response.json();
+const listEl = document.getElementById('listaExercicios');
+const emptyState = document.getElementById('emptyState');
 
-    const select = document.getElementById('muscle-group-select');
-    select.innerHTML = '';
-
-    grupos.forEach(grupo => {
-        const option = document.createElement('option');
-        option.value = grupo.id;
-        option.textContent = grupo.name;
-        select.appendChild(option);
-    });
+function iconEditar() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20h9"></path>
+    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+  </svg>`;
 }
 
-
-let editandoExercicioId = null;
-
-async function carregarExercicios() {
-    const response = await authFetch(`${API_BASE}/exercises`);
-    const exercicios = await response.json();
-
-    const list = document.getElementById('exercise-list');
-    list.innerHTML = '';
-
-    exercicios.forEach(ex => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <span>${ex.name} <small>(${ex.muscleGroup.name})</small></span>
-            <div class="actions">
-                <button data-id="${ex.id}" data-name="${ex.name}" data-group="${ex.muscleGroup.id}" class="edit-btn">Editar</button>
-                <button data-id="${ex.id}" class="delete-btn">Excluir</button>
-            </div>
-        `;
-        list.appendChild(li);
-    });
-
-    document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', iniciarEdicaoExercicio));
-    document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', excluirExercicio));
+function iconExcluir() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h18"></path>
+    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+  </svg>`;
 }
 
-function iniciarEdicaoExercicio(e) {
-    editandoExercicioId = e.target.dataset.id;
-    document.getElementById('name-input').value = e.target.dataset.name;
-    document.getElementById('muscle-group-select').value = e.target.dataset.group;
-    document.querySelector('#exercise-form button[type="submit"]').textContent = 'Salvar edição';
+function renderExercicio({ nome, grupo }) {
+  const row = document.createElement('div');
+  row.className = 'exercise-row';
+  row.innerHTML = `
+    <div class="exercise-row__name">${nome} <span>(${grupo.toLowerCase()})</span></div>
+    <div class="exercise-row__actions">
+      <button class="icon-btn" aria-label="Editar">${iconEditar()}</button>
+      <button class="icon-btn icon-btn--danger" aria-label="Excluir">${iconExcluir()}</button>
+    </div>`;
+  row.querySelector('.icon-btn--danger').addEventListener('click', () => {
+    row.remove();
+    toggleEmptyState();
+  });
+  listEl.insertBefore(row, emptyState);
+  toggleEmptyState();
 }
 
-
-async function excluirExercicio(e) {
-    const id = e.target.dataset.id;
-    const feedback = document.getElementById('feedback');
-
-    const response = await authFetch(`${API_BASE}/exercises/${id}`, { method: 'DELETE' });
-
-    if (response.ok) {
-        feedback.textContent = 'Exercício excluído.';
-        feedback.className = 'ok';
-        carregarExercicios();
-    } else {
-        const erro = await response.text();
-        feedback.textContent = `Erro: ${erro}`;
-        feedback.className = 'erro';
-    }
+function toggleEmptyState() {
+  const hasItems = listEl.querySelectorAll('.exercise-row').length > 0;
+  emptyState.style.display = hasItems ? 'none' : 'block';
 }
 
+// TODO: substituir pelos dados reais de GET /api/exercicios
+renderExercicio({ nome: 'Supino reto', grupo: 'Peito' });
+renderExercicio({ nome: 'Crucifixo voador', grupo: 'Peito' });
 
-document.getElementById('exercise-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+// Cadastro de novo exercício — integrar com POST /api/exercicios
+document.getElementById('exercicioForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const nome = document.getElementById('nomeExercicio').value.trim();
+  const grupo = document.getElementById('grupoMuscular').value;
+  if (!nome) return;
 
-    const name = document.getElementById('name-input').value;
-    const muscleGroupId = Number(document.getElementById('muscle-group-select').value);
-    const feedback = document.getElementById('feedback');
-
-    const url = editandoExercicioId
-        ? `${API_BASE}/exercises/${editandoExercicioId}`
-        : `${API_BASE}/exercises`;
-    const method = editandoExercicioId ? 'PUT' : 'POST';
-
-    const response = await authFetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, muscleGroupId })
-    });
-
-    if (response.ok) {
-        feedback.textContent = editandoExercicioId ? 'Exercício atualizado.' : 'Exercício cadastrado.';
-        feedback.className = 'ok';
-        document.getElementById('exercise-form').reset();
-        document.querySelector('#exercise-form button[type="submit"]').textContent = 'Cadastrar';
-        editandoExercicioId = null;
-        carregarExercicios();
-    } else {
-        feedback.textContent = `Erro: ${await response.text()}`;
-        feedback.className = 'erro';
-    }
+  try {
+    // const res = await fetch('/api/exercicios', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${localStorage.getItem('token')}`
+    //   },
+    //   body: JSON.stringify({ nome, grupoMuscular: grupo })
+    // });
+    renderExercicio({ nome, grupo });
+    e.target.reset();
+  } catch (err) {
+    alert('Não foi possível cadastrar o exercício.');
+  }
 });
-
-
-
-carregarGruposMusculares();
-carregarExercicios();

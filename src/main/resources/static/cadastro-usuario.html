@@ -1,55 +1,70 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>PR Gym — Criar conta</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PR-Tracker · Criar conta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <h1>Criar conta</h1>
+<div class="screen screen--auth">
 
-    <form id="register-form">
-        <label for="email-input">E-mail</label>
-        <input type="email" id="email-input" required autocomplete="email">
+  <div class="hero-pane">
+    <svg class="hero-pane__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="2 12 7 12 9 18 15 6 17 12 22 12"></polyline>
+    </svg>
+    <h2>Crie sua conta.<br>Comece a registrar hoje.</h2>
+    <p>Seus treinos e recordes pessoais, salvos com segurança na nuvem.</p>
+  </div>
 
-        <label for="password-input">Senha</label>
-        <input type="password" id="password-input" required autocomplete="new-password">
+  <div class="content-pane">
+  <div class="brand">
+    <svg class="brand__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="2 12 7 12 9 18 15 6 17 12 22 12"></polyline>
+    </svg>
+    <div class="brand__name">PR<span>-</span>Tracker</div>
+  </div>
 
-        <button type="submit">Criar conta</button>
+  <div class="auth-wrap">
+    <form class="auth-card" id="cadastroForm" novalidate>
+      <h1 class="auth-card__title">CRIAR CONTA</h1>
+
+      <div class="field">
+        <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <input type="text" name="usuario" placeholder="Usuário" autocomplete="username" required />
+      </div>
+
+      <div class="field">
+        <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="10" width="16" height="11" rx="2"></rect>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+        </svg>
+        <input type="password" id="senha" name="senha" placeholder="Senha" autocomplete="new-password" minlength="8" required />
+        <button type="button" class="field__toggle" id="toggleSenha" aria-label="Mostrar senha">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 18.6A9.6 9.6 0 0 1 12 20c-7 0-11-7-11-7a19.3 19.3 0 0 1 4.2-5.1M9.5 5.2A9.7 9.7 0 0 1 12 5c7 0 11 7 11 7a19.4 19.4 0 0 1-2.3 3.2"></path>
+            <path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"></path>
+            <path d="M1 1l22 22"></path>
+          </svg>
+        </button>
+      </div>
+
+      <button type="submit" class="btn-primary">CRIAR CONTA</button>
+
+      <div class="auth-links">
+        <div>já possui conta?</div>
+        <div><a href="login.html">INICIAR SESSÃO</a></div>
+      </div>
     </form>
+  </div>
+  </div>
+</div>
 
-    <p id="feedback"></p>
-
-    <p>Já tem conta? <a href="login.html">Entrar</a></p>
-
-    <script src="js/auth.js"></script>
-    <script>
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('email-input').value;
-            const password = document.getElementById('password-input').value;
-            const feedback = document.getElementById('feedback');
-
-            const response = await fetch(`${API_BASE}/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setToken(data.token);
-                window.location.href = '/index.html';
-            } else {
-                feedback.textContent = await response.text();
-                feedback.className = 'erro';
-            }
-        });
-
-        if (isAuthenticated()) {
-            window.location.href = '/index.html';
-        }
-    </script>
+<script src="js/auth.js"></script>
 </body>
 </html>

@@ -1,57 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>PR Gym — Login</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PR-Tracker · Entrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <h1>PR Gym</h1>
+<div class="screen screen--auth">
 
-    <form id="login-form">
-        <label for="email-input">E-mail</label>
-        <input type="email" id="email-input" required autocomplete="email">
+  <div class="hero-pane">
+    <svg class="hero-pane__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="2 12 7 12 9 18 15 6 17 12 22 12"></polyline>
+    </svg>
+    <h2>Registre cada PR.<br>Acompanhe sua evolução.</h2>
+    <p>Cargas, repetições e recordes pessoais organizados direto do seu treino.</p>
+  </div>
 
-        <label for="password-input">Senha</label>
-        <input type="password" id="password-input" required autocomplete="current-password">
+  <div class="content-pane">
+  <div class="brand">
+    <svg class="brand__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="2 12 7 12 9 18 15 6 17 12 22 12"></polyline>
+    </svg>
+    <div class="brand__name">PR<span>-</span>Tracker</div>
+  </div>
 
-        <button type="submit">Entrar</button>
+  <div class="auth-wrap">
+    <form class="auth-card" id="loginForm" novalidate>
+      <h1 class="auth-card__title">BEM-VINDO!</h1>
+
+      <div class="field">
+        <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <input type="text" name="usuario" placeholder="Usuário" autocomplete="username" required />
+      </div>
+
+      <div class="field">
+        <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="10" width="16" height="11" rx="2"></rect>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+        </svg>
+        <input type="password" id="senha" name="senha" placeholder="Senha" autocomplete="current-password" required />
+        <button type="button" class="field__toggle" id="toggleSenha" aria-label="Mostrar senha">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+      </div>
+
+      <button type="submit" class="btn-primary">ENTRAR</button>
+
+      <div class="auth-links">
+        <div><a href="esqueci-senha.html">Esqueceu a senha?</a></div>
+        <div><a href="cadastro-usuario.html">Criar a conta</a></div>
+      </div>
     </form>
+  </div>
+  </div>
+</div>
 
-    <p id="feedback"></p>
-
-    <p><a href="esqueci-senha.html">Esqueci minha senha</a></p>
-    <p>Não tem conta? <a href="cadastro-usuario.html">Criar conta</a></p>
-
-    <script src="js/auth.js"></script>
-    <script>
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('email-input').value;
-            const password = document.getElementById('password-input').value;
-            const feedback = document.getElementById('feedback');
-
-            const response = await fetch(`${API_BASE}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setToken(data.token);
-                window.location.href = '/index.html';
-            } else {
-                feedback.textContent = await response.text();
-                feedback.className = 'erro';
-            }
-        });
-
-        // Se já estiver logado, não faz sentido ver a tela de login de novo
-        if (isAuthenticated()) {
-            window.location.href = '/index.html';
-        }
-    </script>
+<script src="js/auth.js"></script>
 </body>
 </html>

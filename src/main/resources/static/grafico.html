@@ -1,37 +1,102 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR Gym - Gráfico</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PR-Tracker · Gráfico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-<div class="container">
-    <nav class="tabs">
-        <a href="index.html">Dashboard</a>
-        <a href="registro.html">Registro</a>
-        <a href="exercicios.html">Exercícios</a>
-        <a href="historico.html">Histórico</a>
-        <a href="grafico.html" class="active">Gráfico</a>
-        <button onclick="logout()">Sair</button>
-    </nav>
+<div class="screen screen--app">
 
-    <h1>Evolução</h1>
+  <nav class="bottom-nav">
+    <button class="nav-item" data-target="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="9" rx="1.5"></rect>
+        <rect x="14" y="3" width="7" height="5" rx="1.5"></rect>
+        <rect x="14" y="12" width="7" height="9" rx="1.5"></rect>
+        <rect x="3" y="16" width="7" height="5" rx="1.5"></rect>
+      </svg>
+      DASHBOARD
+    </button>
+    <button class="nav-item" data-target="exercicios.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6.5 6.5 17.5 17.5"></path>
+        <path d="M4 7l3-3 2 2-3 3z"></path>
+        <path d="M17 20l3-3-2-2-3 3z"></path>
+        <path d="M15 4l2 2M4 15l2 2"></path>
+      </svg>
+      EXERCÍCIO
+    </button>
+    <button class="nav-item" data-target="registro.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M12 8v8M8 12h8"></path>
+      </svg>
+      REGISTRO
+    </button>
+    <button class="nav-item" data-target="historico.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+        <path d="M3 4v5h5"></path>
+        <path d="M12 7v5l3 3"></path>
+      </svg>
+      HISTÓRICO
+    </button>
+    <button class="nav-item is-active" data-target="grafico.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 20V10M12 20V4M20 20v-7"></path>
+      </svg>
+      GRÁFICO
+    </button>
+  </nav>
 
-    <label for="exercise-select">Exercício</label>
-    <select id="exercise-select"></select>
+  <div class="app-main">
 
-    <div id="chart-wrapper">
-        <canvas id="evolution-chart"></canvas>
+  <header class="app-header">
+    <div class="brand brand--inline">
+      <svg class="brand__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="2 12 7 12 9 18 15 6 17 12 22 12"></polyline>
+      </svg>
+      <div class="brand__name" style="font-size:18px;">PR<span>-</span>Tracker</div>
     </div>
-    <p id="empty-message" class="empty hidden">Sem dados de 1RM para este exercício ainda (ou é um exercício de peso corporal, que não gera 1RM).</p>
+  </header>
+
+  <h1 class="page-title">Gráfico</h1>
+
+  <div class="page-content">
+    <div class="filter-bar">
+      <div class="select-wrap">
+        <select id="exercicioSelect">
+          <option value="Supino Reto">Supino Reto</option>
+          <option value="Agachamento Livre">Agachamento Livre</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card__canvas-wrap">
+        <canvas id="evolucaoChart"></canvas>
+      </div>
+      <div class="chart-summary">
+        <div class="chart-summary__item">
+          <div class="chart-summary__label">1RM atual estimado</div>
+          <div class="chart-summary__value" id="valorAtual">—</div>
+        </div>
+        <div class="chart-summary__item">
+          <div class="chart-summary__label">Evolução no período</div>
+          <div class="chart-summary__value" id="valorGanho">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
 </div>
 
-<a href="registro.html" class="fab">+</a>
-
-<script src="js/auth.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="js/app.js"></script>
 <script src="js/grafico.js"></script>
 </body>
 </html>

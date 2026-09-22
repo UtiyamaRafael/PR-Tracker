@@ -1,82 +1,63 @@
-exigirAutenticacao();
+// grafico.js — evolução do 1RM estimado por exercício (grafico.html)
 
-let chart = null;
+document.addEventListener('DOMContentLoaded', () => {
+  const select = document.getElementById('exercicioSelect');
+  const canvas = document.getElementById('evolucaoChart');
+  let chart;
 
-async function carregarExercicios() {
-    const response = await authFetch(`${API_BASE}/exercises`);
-    const exercicios = await response.json();
+  // TODO: substituir pelos dados reais de GET /api/dashboard/evolucao?exercicioId=
+  const dadosMock = {
+    'Supino Reto': [
+      { data: '01/07', valor: 78 }, { data: '15/07', valor: 82 },
+      { data: '01/08', valor: 85 }, { data: '15/08', valor: 88 },
+      { data: '01/09', valor: 90 }, { data: '20/09', valor: 92.5 }
+    ],
+    'Agachamento Livre': [
+      { data: '01/07', valor: 110 }, { data: '15/07', valor: 118 },
+      { data: '01/08', valor: 122 }, { data: '15/08', valor: 128 },
+      { data: '01/09', valor: 133 }, { data: '20/09', valor: 140 }
+    ]
+  };
 
-    const select = document.getElementById('exercise-select');
-    select.innerHTML = '';
-
-    exercicios.forEach(ex => {
-        const option = document.createElement('option');
-        option.value = ex.id;
-        option.textContent = ex.name;
-        select.appendChild(option);
-    });
-
-    if (exercicios.length > 0) {
-        carregarGrafico(exercicios[0].id);
-    }
-}
-
-async function carregarGrafico(exerciseId) {
-    const response = await authFetch(`${API_BASE}/records/exercise/${exerciseId}`);
-    const registros = await response.json();
-
-    // Só pontos com 1RM calculado, ordenados do mais antigo pro mais recente
-    const pontos = registros
-        .filter(r => r.estimated1RM !== null && r.estimated1RM !== undefined)
-        .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-    const emptyMessage = document.getElementById('empty-message');
-    const canvas = document.getElementById('evolution-chart');
-
-    if (pontos.length === 0) {
-        canvas.classList.add('hidden');
-        emptyMessage.classList.remove('hidden');
-        if (chart) chart.destroy();
-        return;
-    }
-
-    canvas.classList.remove('hidden');
-    emptyMessage.classList.add('hidden');
-
-    const labels = pontos.map(p => p.date);
-    const valores = pontos.map(p => p.estimated1RM);
+  function desenhar(exercicio) {
+    const pontos = dadosMock[exercicio] || [];
+    const labels = pontos.map((p) => p.data);
+    const valores = pontos.map((p) => p.valor);
 
     if (chart) chart.destroy();
-
     chart = new Chart(canvas, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: '1RM estimado (kg)',
-                data: valores,
-                borderColor: '#4caf50',
-                backgroundColor: 'rgba(76, 175, 80, 0.15)',
-                tension: 0.2,
-                fill: true,
-                pointRadius: 4,
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { labels: { color: '#f0f0f0' } }
-            },
-            scales: {
-                x: { ticks: { color: '#aaa' }, grid: { color: '#333' } },
-                y: { ticks: { color: '#aaa' }, grid: { color: '#333' } }
-            }
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: '1RM estimado (kg)',
+          data: valores,
+          borderColor: '#0066FF',
+          backgroundColor: 'rgba(0,102,255,0.15)',
+          tension: 0.35,
+          fill: true,
+          pointBackgroundColor: '#0066FF',
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: '#2C3244' }, ticks: { color: '#8B92A8' } },
+          y: { grid: { color: '#2C3244' }, ticks: { color: '#8B92A8' } }
         }
+      }
     });
-}
 
-document.getElementById('exercise-select').addEventListener('change', (e) => {
-    carregarGrafico(e.target.value);
+    const primeiro = valores[0] ?? 0;
+    const ultimo = valores[valores.length - 1] ?? 0;
+    const ganho = (ultimo - primeiro).toFixed(1);
+    document.getElementById('valorAtual').textContent = `${ultimo} kg`;
+    document.getElementById('valorGanho').textContent = `${ganho >= 0 ? '+' : ''}${ganho} kg`;
+  }
+
+  select.addEventListener('change', () => desenhar(select.value));
+  desenhar(select.value);
 });
-
-carregarExercicios();

@@ -1,54 +1,74 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>PR Gym — Resetar senha</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PR-Tracker · Redefinir senha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <h1>Criar nova senha</h1>
+<div class="screen screen--auth">
 
-    <form id="reset-form">
-        <label for="password-input">Nova senha</label>
-        <input type="password" id="password-input" required minlength="6" autocomplete="new-password">
+  <div class="hero-pane">
+    <svg class="hero-pane__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="2 12 7 12 9 18 15 6 17 12 22 12"></polyline>
+    </svg>
+    <h2>Quase lá.<br>Defina sua nova senha.</h2>
+    <p>Escolha uma senha forte para manter sua conta e seus recordes protegidos.</p>
+  </div>
 
-        <button type="submit">Salvar nova senha</button>
+  <div class="content-pane">
+  <div class="brand">
+    <svg class="brand__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="2 12 7 12 9 18 15 6 17 12 22 12"></polyline>
+    </svg>
+    <div class="brand__name">PR<span>-</span>Tracker</div>
+  </div>
+
+  <div class="auth-wrap">
+    <form class="auth-card" id="resetarSenhaForm" novalidate>
+      <h1 class="auth-card__title">REDEFINIR SENHA</h1>
+
+      <div class="field">
+        <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="10" width="16" height="11" rx="2"></rect>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+        </svg>
+        <input type="password" id="novaSenha" placeholder="Nova senha" autocomplete="new-password" minlength="8" required />
+        <button type="button" class="field__toggle" id="toggleNovaSenha" aria-label="Mostrar senha">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+      </div>
+
+      <div class="field">
+        <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="10" width="16" height="11" rx="2"></rect>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+        </svg>
+        <input type="password" id="confirmarSenha" placeholder="Confirmar nova senha" autocomplete="new-password" minlength="8" required />
+        <button type="button" class="field__toggle" id="toggleConfirmarSenha" aria-label="Mostrar senha">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+      </div>
+
+      <button type="submit" class="btn-primary">REDEFINIR SENHA</button>
+
+      <div class="auth-links">
+        <div><a href="login.html">Voltar para o login</a></div>
+      </div>
     </form>
+  </div>
+  </div>
+</div>
 
-    <p id="feedback"></p>
-
-    <p><a href="login.html">Voltar para o login</a></p>
-
-    <script src="js/auth.js"></script>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get('token');
-        const feedback = document.getElementById('feedback');
-
-        if (!token) {
-            feedback.textContent = 'Link inválido — nenhum token encontrado na URL.';
-            feedback.className = 'erro';
-            document.getElementById('reset-form').style.display = 'none';
-        }
-
-        document.getElementById('reset-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const newPassword = document.getElementById('password-input').value;
-
-            const response = await fetch(`${API_BASE}/auth/reset-password`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token, newPassword })
-            });
-
-            feedback.textContent = await response.text();
-            feedback.className = response.ok ? 'ok' : 'erro';
-
-            if (response.ok) {
-                document.getElementById('reset-form').style.display = 'none';
-            }
-        });
-    </script>
+<script src="js/auth.js"></script>
 </body>
 </html>

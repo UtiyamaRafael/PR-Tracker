@@ -1,51 +1,32 @@
-exigirAutenticacao();
+// app.js — utilidades compartilhadas pelas páginas internas do app
+// (dashboard, exercícios, registro, histórico, gráfico)
 
-async function carregarExercicios() {
-    const response = await authFetch(`${API_BASE}/exercises`);
-    const exercicios = await response.json();
+// Marca o item de navegação correspondente à página atual
+(function marcarNavAtiva() {
+  const paginaAtual = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-item[data-target]').forEach((btn) => {
+    btn.classList.toggle('is-active', btn.dataset.target === paginaAtual);
+  });
+})();
 
-    const select = document.getElementById('exercise-select');
-    select.innerHTML = '';
-
-    exercicios.forEach(ex => {
-        const option = document.createElement('option');
-        option.value = ex.id;
-        option.textContent = ex.name;
-        select.appendChild(option);
-    });
-}
-
-document.getElementById('record-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const exerciseId = document.getElementById('exercise-select').value;
-    const weightInput = document.getElementById('weight-input').value;
-    const reps = document.getElementById('reps-input').value;
-
-    const body = {
-        exerciseId: Number(exerciseId),
-        weight: weightInput === '' ? null : Number(weightInput),
-        reps: Number(reps)
-    };
-
-    const response = await authFetch(`${API_BASE}/records`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-
-    const feedback = document.getElementById('feedback');
-
-    if (response.ok) {
-        const record = await response.json();
-        feedback.textContent = record.isPr ? '🏆 Novo PR!' : 'Registro salvo.';
-        feedback.className = record.isPr ? 'pr' : 'ok';
-        document.getElementById('record-form').reset();
-    } else {
-        const erro = await response.text();
-        feedback.textContent = `Erro: ${erro}`;
-        feedback.className = 'erro';
-    }
+// Clique nos itens da sidebar / bottom nav
+document.querySelectorAll('.nav-item[data-target]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    window.location.href = btn.dataset.target;
+  });
 });
 
-carregarExercicios();
+// Guarda de autenticação simples — sem token, volta pro login
+// TODO: quando o auth.js do backend estiver plugado, validar o token de verdade
+function exigirAutenticacao() {
+  if (!localStorage.getItem('token')) {
+    window.location.href = 'login.html';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  window.location.href = 'login.html';
+}
+
+exigirAutenticacao();

@@ -1,40 +1,36 @@
-exigirAutenticacao();
+// dashboard.js — resumo do treino (index.html)
 
-async function carregarDashboard() {
-    const response = await authFetch(`${API_BASE}/dashboard/prs`);
-    const resumo = await response.json();
+document.addEventListener('DOMContentLoaded', () => {
+  // TODO: substituir pelos dados reais de GET /api/dashboard
+  const resumo = {
+    totalPrs: 14,
+    exerciciosCadastrados: 9,
+    treinosNoMes: 12,
+    ultimoTreino: '21/09'
+  };
 
-    const container = document.getElementById('pr-list');
-    container.innerHTML = '';
+  document.getElementById('statTotalPrs').textContent = resumo.totalPrs;
+  document.getElementById('statExercicios').textContent = resumo.exerciciosCadastrados;
+  document.getElementById('statTreinosMes').textContent = resumo.treinosNoMes;
+  document.getElementById('statUltimoTreino').textContent = resumo.ultimoTreino;
 
-    if (resumo.length === 0) {
-        container.innerHTML = '<p class="empty">Nenhum exercício cadastrado ainda. Vá em "Exercícios" para começar.</p>';
-        return;
-    }
+  // TODO: substituir pelos dados reais de GET /api/registros?recentes=true
+  const recentes = [
+    { nome: 'Supino reto', valor: '92,5 kg', meta: '5 reps · 1RM estimado', pr: true },
+    { nome: 'Agachamento livre', valor: '140 kg', meta: '3 reps · 1RM estimado', pr: true },
+    { nome: 'Levantamento terra', valor: '160 kg', meta: '2 reps · 1RM estimado', pr: false }
+  ];
 
-    resumo.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'pr-card';
-
-        let corpoTexto;
-        if (item.weight !== null && item.weight !== undefined) {
-            corpoTexto = `${item.weight}kg × ${item.reps} <small>(1RM est.: ${item.estimated1RM.toFixed(1)}kg)</small>`;
-        } else if (item.reps !== null && item.reps !== undefined) {
-            corpoTexto = `${item.reps} reps (corporal)`;
-        } else {
-            corpoTexto = '<span class="empty">Sem registros ainda</span>';
-        }
-
-        card.innerHTML = `
-            <div class="pr-card-header">
-                <strong>${item.exerciseName}</strong>
-                <span class="tag">${item.muscleGroupName}</span>
-            </div>
-            <div class="pr-card-body">${corpoTexto}</div>
-            ${item.date ? `<small class="pr-date">${item.date}</small>` : ''}
-        `;
-        container.appendChild(card);
-    });
-}
-
-carregarDashboard();
+  const lista = document.getElementById('recentesLista');
+  recentes.forEach((r) => {
+    const row = document.createElement('div');
+    row.className = 'record-row';
+    row.innerHTML = `
+      <div class="record-row__main">
+        <div class="record-row__name">${r.nome}${r.pr ? '<span class="pr-badge">NOVO PR</span>' : ''}</div>
+        <div class="record-row__meta">${r.meta}</div>
+      </div>
+      <div class="record-row__value">${r.valor}</div>`;
+    lista.appendChild(row);
+  });
+});
