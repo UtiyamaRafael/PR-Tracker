@@ -30,3 +30,20 @@ function logout() {
 }
 
 exigirAutenticacao();
+
+async function apiFetch(url, options = {}) {
+  const token = localStorage.getItem('token');
+  const headers = new Headers(options.headers || {});
+  headers.set('Authorization', `Bearer ${token}`);
+
+  const response = await fetch(url, { ...options, headers });
+  if (response.status === 401 || response.status === 403) {
+    logout();
+    throw new Error('Sessão expirada.');
+  }
+  return response;
+}
+
+function formatarData(data) {
+  return data ? new Date(`${data}T00:00:00`).toLocaleDateString('pt-BR') : '—';
+}

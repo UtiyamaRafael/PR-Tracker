@@ -107,44 +107,6 @@
 </div>
 
 <script src="js/app.js"></script>
-<script>
-  // Lógica local de registro.html (sem arquivo js/ dedicado no projeto)
-
-  document.getElementById('dataRegistro').valueAsDate = new Date();
-
-  const lista = document.getElementById('listaRegistrosHoje');
-  const empty = document.getElementById('registroEmptyState');
-
-  function calcular1RM(peso, reps) {
-    // Fórmula de Epley: peso × (1 + reps/30)
-    return (peso * (1 + reps / 30)).toFixed(1);
-  }
-
-  function renderRegistro({ exercicio, peso, reps }) {
-    const row = document.createElement('div');
-    row.className = 'record-row';
-    row.innerHTML = `
-      <div class="record-row__main">
-        <div class="record-row__name">${exercicio}</div>
-        <div class="record-row__meta">${reps} reps · 1RM estimado ${calcular1RM(peso, reps)} kg</div>
-      </div>
-      <div class="record-row__value">${peso} kg</div>`;
-    lista.insertBefore(row, empty);
-    empty.style.display = 'none';
-  }
-
-  // Cadastro de novo registro — integrar com POST /api/registros
-  document.getElementById('registroForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const exercicio = document.getElementById('exercicioSelect').value;
-    const peso = parseFloat(document.getElementById('peso').value);
-    const reps = parseInt(document.getElementById('repeticoes').value, 10);
-    if (!peso || !reps) return;
-
-    renderRegistro({ exercicio, peso, reps });
-    document.getElementById('peso').value = '';
-    document.getElementById('repeticoes').value = '';
-  });
-</script>
+<script src="js/registro.js"></script>
 </body>
 </html>

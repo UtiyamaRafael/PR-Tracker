@@ -21,21 +21,21 @@ const loginForm = document.getElementById('loginForm');
 if (loginForm) {
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const usuario = e.target.usuario.value.trim();
+    const email = e.target.email.value.trim();
     const senha = document.getElementById('senha').value;
 
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: usuario, password: senha })
+        body: JSON.stringify({ email, password: senha })
       });
       if (!res.ok) throw new Error('Credenciais inválidas');
       const data = await res.json();
       localStorage.setItem('token', data.token);
       window.location.href = 'index.html';
     } catch (err) {
-      alert('Não foi possível entrar. Verifique usuário e senha.');
+      alert('Não foi possível entrar. Verifique e-mail e senha.');
     }
   });
 }
@@ -45,39 +45,40 @@ const cadastroForm = document.getElementById('cadastroForm');
 if (cadastroForm) {
   cadastroForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const usuario = e.target.usuario.value.trim();
+    const email = e.target.email.value.trim();
     const senha = document.getElementById('senha').value;
 
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: usuario, password: senha })
+        body: JSON.stringify({ email, password: senha })
       });
       if (!res.ok) throw new Error('Falha no cadastro');
       const data = await res.json();
       localStorage.setItem('token', data.token);
       window.location.href = 'index.html';
     } catch (err) {
-      alert('Não foi possível criar a conta. Tente outro usuário.');
+      alert('Não foi possível criar a conta. Tente outro e-mail.');
     }
   });
 }
 
-// ESQUECI A SENHA — POST /api/auth/esqueci-senha (endpoint ainda não existe no backend)
+// ESQUECI A SENHA — POST /api/auth/forgot-password
 const esqueciForm = document.getElementById('esqueciSenhaForm');
 if (esqueciForm) {
   esqueciForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const usuario = e.target.usuario.value.trim();
+    const email = e.target.email.value.trim();
     const feedback = document.getElementById('esqueciFeedback');
 
     try {
-      // await fetch('/api/auth/esqueci-senha', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ username: usuario })
-      // });
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (!res.ok) throw new Error('Falha ao solicitar recuperação');
       feedback.textContent = 'Se o usuário existir, enviamos um link de recuperação.';
       feedback.style.display = 'block';
       e.target.reset();
@@ -88,7 +89,7 @@ if (esqueciForm) {
   });
 }
 
-// REDEFINIR SENHA — POST /api/auth/resetar-senha (endpoint ainda não existe no backend)
+// REDEFINIR SENHA — POST /api/auth/reset-password
 const resetarForm = document.getElementById('resetarSenhaForm');
 if (resetarForm) {
   resetarForm.addEventListener('submit', async (e) => {
@@ -103,12 +104,18 @@ if (resetarForm) {
 
     const token = new URLSearchParams(window.location.search).get('token');
 
+    if (!token) {
+      alert('O link de recuperação é inválido ou está incompleto.');
+      return;
+    }
+
     try {
-      // await fetch('/api/auth/resetar-senha', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ token, novaSenha })
-      // });
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, newPassword: novaSenha })
+      });
+      if (!res.ok) throw new Error('Falha ao redefinir senha');
       alert('Senha redefinida com sucesso. Faça login novamente.');
       window.location.href = 'login.html';
     } catch (err) {
