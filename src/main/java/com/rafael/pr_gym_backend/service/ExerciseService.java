@@ -46,6 +46,12 @@ public class ExerciseService {
         Exercise exercise = exerciseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Exercício não encontrado."));
 
+        // Mesma validação de unicidade do cadastro (RF01): sem isso, renomear para um
+        // nome já existente derruba com uma DataIntegrityViolationException não tratada.
+        if (!exercise.getName().equalsIgnoreCase(novoNome) && exerciseRepository.existsByNameIgnoreCase(novoNome)) {
+            throw new IllegalArgumentException("Já existe um exercício com esse nome.");
+        }
+
         MuscleGroup grupo = muscleGroupRepository.findById(novoMuscleGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("Grupo muscular não encontrado."));
 

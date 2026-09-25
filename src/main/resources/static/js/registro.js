@@ -31,23 +31,39 @@ async function carregarExercicios() {
   exercicios.forEach((exercicio) => exercicioSelect.add(new Option(exercicio.name, exercicio.id)));
 }
 
+const pesoInput = document.getElementById('peso');
+const pesoCorporalCheckbox = document.getElementById('pesoCorporal');
+
+// Ao marcar "peso corporal", esvazia e desabilita o campo de peso —
+// sem isso o backend nunca recebia weight: null e a regra de PR por
+// repetições máximas (exercícios de peso corporal) ficava inacessível.
+pesoCorporalCheckbox.addEventListener('change', () => {
+  pesoInput.disabled = pesoCorporalCheckbox.checked;
+  if (pesoCorporalCheckbox.checked) pesoInput.value = '';
+});
+
 document.getElementById('dataRegistro').valueAsDate = new Date();
 registroForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const exerciseId = Number(exercicioSelect.value);
-  const weightText = document.getElementById('peso').value;
+  const pesoCorporal = pesoCorporalCheckbox.checked;
+  const weightText = pesoInput.value;
   const reps = Number(document.getElementById('repeticoes').value);
   const date = document.getElementById('dataRegistro').value;
-  if (!exerciseId || !reps || weightText === '') return;
+  if (!exerciseId || !reps) return;
+  if (!pesoCorporal && weightText === '') return;
+  const weight = pesoCorporal ? null : Number(weightText);
   try {
     const response = await apiFetch('/api/records', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ exerciseId, weight: Number(weightText), reps, date })
+      body: JSON.stringify({ exerciseId, weight, reps, date })
     });
     if (!response.ok) throw new Error(await response.text());
     renderRegistro(await response.json());
-    document.getElementById('peso').value = '';
+    pesoInput.value = '';
     document.getElementById('repeticoes').value = '';
+    pesoCorporalCheckbox.checked = false;
+    pesoInput.disabled = false;
   } catch (erro) { alert(erro.message || 'Não foi possível registrar o treino.'); }
 });
 

@@ -1,5 +1,7 @@
 package com.rafael.pr_gym_backend.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
@@ -36,5 +40,15 @@ public class GlobalExceptionHandler {
                 .orElse("Dados inválidos.");
 
         return ResponseEntity.badRequest().body(mensagem);
+    }
+
+    // Rede de seguranca final: qualquer excecao nao mapeada acima cai aqui.
+    // Sem isso, o Spring devolve a whitelabel error page (ou o stack trace,
+    // dependendo da config), que pode vazar detalhes internos ao cliente.
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneric(Exception ex) {
+        log.error("Erro nao tratado", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Ocorreu um erro inesperado. Tente novamente em instantes.");
     }
 }

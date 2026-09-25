@@ -1,6 +1,7 @@
 package com.rafael.pr_gym_backend.controller;
 
 import com.rafael.pr_gym_backend.dto.RecordRequest;
+import com.rafael.pr_gym_backend.dto.RecordResponse;
 import com.rafael.pr_gym_backend.model.Record;
 import com.rafael.pr_gym_backend.model.User;
 import com.rafael.pr_gym_backend.service.RecordService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/records")
@@ -24,8 +26,11 @@ public class RecordController {
         this.authUtil = authUtil;
     }
 
+    // Retorna RecordResponse (DTO), nunca a entidade Record crua: Record
+    // carrega uma referencia para User, e serializar User expunha o hash
+    // bcrypt da senha no JSON (ver analise tecnica, item critico).
     @PostMapping
-    public ResponseEntity<Record> registrar(@Valid @RequestBody RecordRequest request) {
+    public ResponseEntity<RecordResponse> registrar(@Valid @RequestBody RecordRequest request) {
         User user = authUtil.getCurrentUser();
         Record criado = recordService.registrar(
                 user,
@@ -34,19 +39,22 @@ public class RecordController {
                 request.getReps(),
                 request.getDate()
         );
-        return ResponseEntity.status(HttpStatus.CREATED).body(criado);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new RecordResponse(criado));
     }
 
     @GetMapping("/exercise/{exerciseId}")
-    public List<Record> historico(@PathVariable Long exerciseId) {
+    public List<RecordResponse> historico(@PathVariable Long exerciseId) {
         User user = authUtil.getCurrentUser();
-        return recordService.listarHistorico(user, exerciseId);
+        return recordService.listarHistorico(user, exerciseId).stream()
+                .map(RecordResponse::new)
+                .collect(Collectors.toList());
     }
 
     @PutMapping("/{id}")
-    public Record editar(@PathVariable Long id, @Valid @RequestBody RecordRequest request) {
+    public RecordResponse editar(@PathVariable Long id, @Valid @RequestBody RecordRequest request) {
         User user = authUtil.getCurrentUser();
-        return recordService.editar(user, id, request.getWeight(), request.getReps(), request.getDate());
+        Record editado = recordService.editar(user, id, request.getWeight(), request.getReps(), request.getDate());
+        return new RecordResponse(editado);
     }
 
     @DeleteMapping("/{id}")
