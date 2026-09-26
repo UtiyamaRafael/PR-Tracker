@@ -23,10 +23,10 @@ public class AuthController {
     private final PasswordResetService passwordResetService;
 
     public AuthController(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder,
-                           JwtUtil jwtUtil,
-                           AuthenticationManager authenticationManager,
-                           PasswordResetService passwordResetService) {
+                          PasswordEncoder passwordEncoder,
+                          JwtUtil jwtUtil,
+                          AuthenticationManager authenticationManager,
+                          PasswordResetService passwordResetService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
@@ -40,12 +40,15 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Já existe uma conta com esse e-mail");
         }
 
+        // gera o token ANTES de salvar: se isso falhar (ex: JWT_SECRET inválido),
+        // o usuário não fica salvo no banco sem retornar sucesso
+        String token = jwtUtil.generateToken(dto.getEmail());
+
         User user = new User();
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getEmail());
         return ResponseEntity.ok(new AuthResponseDTO(token));
     }
 
