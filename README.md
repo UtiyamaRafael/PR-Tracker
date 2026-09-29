@@ -1,4 +1,4 @@
-# 🏋️ PR Gym
+# 🏋️ PR-Tracker
 
 Aplicativo *mobile-first* para registrar e acompanhar **recordes pessoais (PRs) de carga** na musculação, com histórico, gráficos de evolução e autenticação de usuários.
 
