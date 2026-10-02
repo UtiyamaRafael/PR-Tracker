@@ -124,13 +124,6 @@ Authorization: Bearer <token>
 
 A aplicação é empacotada com Docker e publicada no **Render**, utilizando um banco PostgreSQL hospedado no **Neon**.
 
-## 🗺️ Próximos passos
-
-- [ ] Testes automatizados de isolamento de dados entre usuários
-- [ ] Recuperação e redefinição de senha completas
-- [ ] Integração total do frontend com a API (remover dados fictícios)
-- [ ] Testes unitários e de integração para as regras de PR
-
 ## 👤 Autor
 
 **Rafael Utiyama**
